@@ -18,6 +18,6 @@ Each indicator file takes in ticker data, record_date, last_EOM_date, previous_E
   e.g. 10 month SMA SPY,	Monthly,	LONG (3.64%),	LONG (7.12%),	 SPY/10 month SMA; 1.0 is lower limit
   
 ## Original Python Jupyter Notebooks
-This repository also includes a folder of the original implementation of Python Jupyter Notebooks Calculating several Stock Market Techical Indicators
+This repository also includes a folder "Jupyter Notebooks" of the original implementation of Python Jupyter Notebooks Calculating several Stock Market Techical Indicators
 
 
