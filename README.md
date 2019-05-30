@@ -14,7 +14,7 @@ A single file indicators.py whose function it is to:
 Each indicator file takes in ticker data, record_date, last_EOM_date, previous_EOM_date 
   and returns a dictionary which contains name of the Technical Indicator, Frequency, the result of that indicator for
   the last month and the month before that and any comments.
-  The retults are in the form LONG/SHORT and optionally a numeric result of the indicator usually in the form of a %
+  The retults are in the form LONG/SHORT and optionally a numeric result of the indicator usually in the form of a %<br>
   e.g. 10 month SMA SPY,	Monthly,	LONG (3.64%),	LONG (7.12%),	 SPY/10 month SMA; 1.0 is lower limit
   
 ## Original Python Jupyter Notebooks
