@@ -1,6 +1,6 @@
 """
 
-5/29/2019 
+5/29/2019
 Robert Sloan, Bill Paceman
 replicating Al Zmyslowski's Technical and Economic Indicators
 Based on Al Zmyslowski's Stock Market Review - Technical & Economic Indicators
@@ -11,7 +11,7 @@ TO DO
   Store stock data in a way that calculations could be accuratly recreated
   Put Spreadsheet in Al's order
   for the purpose of the graphs I may prefer to have more than a years worth of data
-  
+
 """
 # Import libraries
 import pandas as pd
@@ -36,9 +36,9 @@ def loadTickers(start_date,record_date,todays_date,tickers):
   if not os.path.exists('Spreadsheets'):
     os.makedirs('Spreadsheets')
 
-  return data.DataReader(tickers, 
-                       start=start_date, 
-                       end=record_date, 
+  return data.DataReader(tickers,
+                       start=start_date,
+                       end=record_date,
                        data_source='yahoo')['Adj Close']
 
 
@@ -54,7 +54,7 @@ def allIndicators(moduleList):
   # two years of data is needed to calculate 12M Gain and Fund X Score indicators
   twoYearsAgo = (currentDT - datetime.timedelta(731))
   start_date = str(twoYearsAgo.year) + "-" + str(twoYearsAgo.month) + "-"+  str(twoYearsAgo.day)
- 
+
   # Load the tickers for date range
   data = loadTickers(start_date,record_date,todays_date,["SPY","BIL"])
   #print(" exited loadTickers")
@@ -65,7 +65,7 @@ def allIndicators(moduleList):
   # Set the day to 1 gives us the start of the month
   firstDay = lastDay.replace(day=1)
   last_EOM_date = data["SPY"].loc[firstDay:lastDay].last('1D').index # get the last market day last month
-  
+
   strLast_EOM_date = last_EOM_date.strftime("%Y-%m-%d") # get the last market day last month
   print("Last Market Day last Month", str(strLast_EOM_date[0]))
   # print("type(strLast_EOM_date) = ", type(str(strLast_EOM_date[0])))
@@ -74,8 +74,12 @@ def allIndicators(moduleList):
   # Get the last day of last month by taking the first day of last month
   # and subtracting 1 day.
   # Set the day to 1 gives us the start of the month
-  
-  lastDay = datetime.date(currentDT.year, currentDT.month-1, 1) - datetime.timedelta(1)
+
+  if (currentDT.month > 1):
+    lastDay = datetime.date(currentDT.year, currentDT.month-1, 1) - datetime.timedelta(1)
+  else:
+    lastDay = datetime.date(currentDT.year-1, currentDT.month+11, 1) - datetime.timedelta(1)
+
   firstDay = lastDay.replace(day=1)
   previous_EOM_date = data["SPY"].loc[firstDay:lastDay].last('1D').index
 
@@ -83,13 +87,13 @@ def allIndicators(moduleList):
 
   strPrevious_EOM_date = previous_EOM_date.strftime('%Y-%m-%d') # and month before last
   print("Last Market Day Month before last", str(strPrevious_EOM_date[0]))
-  
+
   # the following line is equivolent to :
   # spreadsheetData = []
   #for for module in moduleList: spreadsheetData.append(__import__(module).Indicator(data))
-  
+
   spreadsheetList = [__import__(module).Indicator(data, record_date, last_EOM_date, previous_EOM_date) for module in moduleList]
-  
+
   # print(" done with streadsheetList ")
   # Turn aggegated results into spreadsheet.
   # print("type(spreadsheetData) = ", type(spreadsheetData))
@@ -97,21 +101,17 @@ def allIndicators(moduleList):
   print("\n")
   spreadsheet = pd.DataFrame(spreadsheetList, columns = ['Technical Indicator','Frequency', 'MonthBeforeLast', 'LastMonth','Comment'])
   print(spreadsheet)
-  
+
   writer = pd.ExcelWriter(str('Spreadsheets/'+record_date +'_indicator_sheet.xlsx'))
-  
+
   spreadsheet.to_excel(writer,'Indicators', index=False)
   writer.save()
-  
-  
+
+
 #===========================================================================================================
-# the following line is to allow the calling of this code from a command line  
+# the following line is to allow the calling of this code from a command line
 if __name__ == '__main__':
   #print("... starting ...")
   modules =[name[:-3] for name in glob("i*.py")] #i.e.i01_10MSMASPY.py
   modules.sort()
   allIndicators(modules)
-
-  
-
-  
