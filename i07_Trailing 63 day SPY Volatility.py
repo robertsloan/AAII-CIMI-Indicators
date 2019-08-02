@@ -39,6 +39,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   fig, ax = plt.subplots(figsize=(16,9))
   fig, ax = plt.subplots(figsize=(16,9))
   title = indicatorType + "\n" + record_date
+  ax.set_title(title)
   ax.plot(spy_data.index, spy_data, label='SPY')
   ax.plot(spy_63d_sma.index, spy_63d_sma, label='63 day simple moving average')
   ax.plot(spy_63d_std.index, spy_63d_std, label='63 day volatility (standard deviation)')
