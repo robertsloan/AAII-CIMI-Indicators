@@ -1,16 +1,16 @@
 """
 5/30/2019
-Robert Sloan 
+Robert Sloan
 
 Replicating Al Zmyslowski's AAII CIMI Market Review - Technical & Economic Indicators
 Using Yahoo Adjusted Close for SPY and BIL in calculations.
 
 5 month gain - Compare 5 month gain of SPY vs. BIL
 
-TODO 
+TODO
 
   Find out why some areas of the graph are not boxed in green (SPY better) or red (BIL better)
-  
+
 """
 
 # load libraries
@@ -37,8 +37,8 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   gain_flag_5M = spy_5M_gain - bil_5M_gain
   gain_flag_5M = gain_flag_5M.dropna()
   # gain is a series with 0 if SPY performed better or -1 if BIL performed better
-  gain_flag_5M = gain_flag_5M.apply(lambda x: 0 if x >= 0 else -1) 
- 
+  gain_flag_5M = gain_flag_5M.apply(lambda x: 0 if x >= 0 else -1)
+
   # truncate SPY and BIL data to match the length of the gain series
   lengthOfGainFlag = len(gain_flag_5M)
   trunc_spy_data = spy_data[0:lengthOfGainFlag]
@@ -57,14 +57,14 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # fillin green or red bars depending if SPY or BIL had a better 5M year gain
   ax.fill_between(trunc_spy_data.index, 80, 300, where = gain_flag_5M==0, facecolor = 'green', alpha=0.5)
   ax.fill_between(trunc_spy_data.index, 80, 300, where = gain_flag_5M<0, facecolor = 'red', alpha=0.5)
-  fig.savefig("Figures/" + indicatorType +".png") 
+  fig.savefig("Figures/" + indicatorType +".png")
   #plt.show()
 
   # Calculate for Last day of last month
   # If the 5 month SPY gain greater than BIL go LONG
   # otherwise go Short
-  
-  endOfLastMonth_gain_flag_5M = gain_flag_5M.loc[last_EOM_date] 
+
+  endOfLastMonth_gain_flag_5M = gain_flag_5M.loc[last_EOM_date]
   endOfLastMonth_spy_5M_gain = str(round((spy_5M_gain.loc[last_EOM_date][0])*100,2))
   endOfLastMonth_bil_5M_gain = str(round((bil_5M_gain.loc[last_EOM_date][0])*100,2))
 
@@ -72,8 +72,8 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
       lastMonth_status_5M = 'LONG'
   else:
       lastMonth_status_5M = 'SHORT'
-  
-  # Calculate for Last day of month before last 
+
+  # Calculate for Last day of month before last
   # If the 5 month SPY gain greater than BIL go LONG
   # otherwise go Short
   endOfMonthBeforeLast_gain_flag_5M = gain_flag_5M.loc[previous_EOM_date]
@@ -83,7 +83,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
       monthBeforeLast_status_5M = 'LONG'
   else:
       monthBeforeLast_status_5M = 'SHORT'
- 
+
   strLast_EOM_date = str(last_EOM_date.strftime('%Y-%m-%d')[0])
   strPrevious_EOM_date = str(previous_EOM_date.strftime('%Y-%m-%d')[0])
 
@@ -91,21 +91,18 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   lastMonth_status_5M_str = lastMonth_status_5M + "(" + endOfLastMonth_spy_5M_gain + "%/" + endOfLastMonth_bil_5M_gain + "%)"
   monthBeforeLast_status_5M_str = monthBeforeLast_status_5M + "(" + endOfMonthBeforeLast_spy_5M_gain + "%/" + endOfMonthBeforeLast_bil_5M_gain + "%)"
   indicators = pd.DataFrame([{'Technical Indicator': indicatorType,
-                              strLast_EOM_date:lastMonth_status_5M_str, 
-                              strPrevious_EOM_date:monthBeforeLast_status_5M_str, 
-                              'Comment': comment}], 
+                              strLast_EOM_date:lastMonth_status_5M_str,
+                              strPrevious_EOM_date:monthBeforeLast_status_5M_str,
+                              'Comment': comment}],
                              columns=['Technical Indicator', strLast_EOM_date, strPrevious_EOM_date,
                                       'Comment'])
   #print (indicators)
 
 
-  
+
   return {
           "Technical Indicator": indicatorType,
           "Frequency":"Monthly",
-          "MonthBeforeLast":lastMonth_status_5M_str,
-          "LastMonth":monthBeforeLast_status_5M_str,
-          "Comment":comment} 
-
-
-
+          "MonthBeforeLast":monthBeforeLast_status_5M_str,
+          "LastMonth":lastMonth_status_5M_str,
+          "Comment":comment}

@@ -1,15 +1,15 @@
 """
 6/3/2019
-Robert Sloan 
+Robert Sloan
 
 Replicating Al Zmyslowski's AAII CIMI Market Review - Technical & Economic Indicators
 Using Yahoo Adjusted Close for SPY and BIL in calculations.
 
-12M gain - Compare 12 month gain of SPY vs. BIL 
-TODO 
+12M gain - Compare 12 month gain of SPY vs. BIL
+TODO
 
   Find out why some areas of the graph are not boxed in green (SPY better) or red (BIL better)
-  
+
 """
 
 # load libraries
@@ -27,7 +27,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # get SPY and BIL data from passed dataframe
   spy_data = dataframe["SPY"]
   bil_data = dataframe["BIL"]
-  
+
   # Calculate 12 month gains
   spy_12M_gain = spy_data.pct_change(252)
   bil_12M_gain = bil_data.pct_change(252)
@@ -36,8 +36,8 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   gain_flag_12M = spy_12M_gain - bil_12M_gain
   gain_flag_12M = gain_flag_12M.dropna()
   # gain is a series with 0 if SPY performed better or -1 if BIL performed better
-  gain_flag_12M = gain_flag_12M.apply(lambda x: 0 if x >= 0 else -1) 
- 
+  gain_flag_12M = gain_flag_12M.apply(lambda x: 0 if x >= 0 else -1)
+
   # truncate SPY and BIL data to match the length of the gain series
   lengthOfGainFlag = len(gain_flag_12M)
   trunc_spy_data = spy_data[0:lengthOfGainFlag]
@@ -56,14 +56,14 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # fillin green or red bars depending if SPY or BIL had a better 12M year gain
   ax.fill_between(trunc_spy_data.index, 80, 300, where = gain_flag_12M==0, facecolor = 'green', alpha=0.5)
   ax.fill_between(trunc_spy_data.index, 80, 300, where = gain_flag_12M<0, facecolor = 'red', alpha=0.5)
-  fig.savefig("Figures/" + indicatorType +".png") 
+  fig.savefig("Figures/" + indicatorType +".png")
   #plt.show()
 
   # Calculate for Last day of last month
   # If the 5 month SPY gain greater than BIL go LONG
   # otherwise go Short
-  
-  endOfLastMonth_gain_flag_12M = gain_flag_12M.loc[last_EOM_date] 
+
+  endOfLastMonth_gain_flag_12M = gain_flag_12M.loc[last_EOM_date]
   endOfLastMonth_spy_12M_gain = str(round((spy_12M_gain.loc[last_EOM_date][0])*100,2))
   endOfLastMonth_bil_12M_gain = str(round((bil_12M_gain.loc[last_EOM_date][0])*100,2))
 
@@ -71,8 +71,8 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
       lastMonth_status_12M = 'LONG'
   else:
       lastMonth_status_12M = 'SHORT'
-  
-  # Calculate for Last day of month before last 
+
+  # Calculate for Last day of month before last
   # If the 5 month SPY gain greater than BIL go LONG
   # otherwise go Short
   endOfMonthBeforeLast_gain_flag_12M = gain_flag_12M.loc[previous_EOM_date]
@@ -82,7 +82,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
       monthBeforeLast_status_12M = 'LONG'
   else:
       monthBeforeLast_status_12M = 'SHORT'
- 
+
   strLast_EOM_date = str(last_EOM_date.strftime('%Y-%m-%d')[0])
   strPrevious_EOM_date = str(previous_EOM_date.strftime('%Y-%m-%d')[0])
 
@@ -90,21 +90,18 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   lastMonth_status_12M_str = lastMonth_status_12M + "(" + endOfLastMonth_spy_12M_gain + "%/" + endOfLastMonth_bil_12M_gain + "%)"
   monthBeforeLast_status_12M_str = monthBeforeLast_status_12M + "(" + endOfMonthBeforeLast_spy_12M_gain + "%/" + endOfMonthBeforeLast_bil_12M_gain + "%)"
   indicators = pd.DataFrame([{'Technical Indicator': indicatorType,
-                              strLast_EOM_date:lastMonth_status_12M_str, 
-                              strPrevious_EOM_date:monthBeforeLast_status_12M_str, 
-                              'Comment': comment}], 
+                              strLast_EOM_date:lastMonth_status_12M_str,
+                              strPrevious_EOM_date:monthBeforeLast_status_12M_str,
+                              'Comment': comment}],
                              columns=['Technical Indicator', strLast_EOM_date, strPrevious_EOM_date,
                                       'Comment'])
   #print (indicators)
 
 
-  
+
   return {
           "Technical Indicator": indicatorType,
           "Frequency":"Monthly",
-          "MonthBeforeLast":lastMonth_status_12M_str,
-          "LastMonth":monthBeforeLast_status_12M_str,
-          "Comment":comment} 
-
-
-
+          "MonthBeforeLast":monthBeforeLast_status_12M_str,
+          "LastMonth":lastMonth_status_12M_str,
+          "Comment":comment}

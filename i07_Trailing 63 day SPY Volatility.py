@@ -1,17 +1,17 @@
 """
-6/6/2019 
-Robert Sloan 
+6/6/2019
+Robert Sloan
 
-replicating Al Zmyslowski's AAII CIMI 10M SMA SPY Market timer 
+replicating Al Zmyslowski's AAII CIMI 10M SMA SPY Market timer
 
 SPY trailing 63 day volatility (Standard Deviation)if less than 1% go Long if >1% go partialy to cash (BIL T-Bills)
 Using Yahoo Adjusted Close for SPY in calculations.
 Variations include use of SPLV, SDS for high and low vol markets; use of IEF, TLT, etc. instead of cash for volatility reduction instrument
-Can implement in 5 or 10% increments to cut down on trading frequency 
+Can implement in 5 or 10% increments to cut down on trading frequency
 TO DO
 
 Need to define % in Cash if Standard Deviation (SD) is >1%
-   
+
 """
 # load libraries
 import pandas as pd
@@ -23,10 +23,10 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # this library load is because of a pandas matplotlib FutureWarning
   from pandas.plotting import register_matplotlib_converters
   register_matplotlib_converters()
-  
+
   indicatorType = "Trailing 63 day SPY Volatility"
   print("Calculating", indicatorType)
-  
+
   # Get the spy_data timeseries. This now returns a Pandas Series object indexed by date.
   spy_data = dataframe["SPY"]
   # print("spy_data.head() = ", spy_data.head())
@@ -46,7 +46,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price ($)')
   ax.legend()
-  fig.savefig("Figures/" + indicatorType + ".png") 
+  fig.savefig("Figures/" + indicatorType + ".png")
   #plt.show()
 
   # current 63 day volatility (Standard Deviation) SPY
@@ -81,19 +81,18 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   lastMonth_status_str = statusLastMonth + " (" + str(endOfLastMonth_63d_std_spy) + "%)"
   monthBeforeLast_status_str = statusMonthBeforeLast + " (" + str(endOfMonthBeforeLasts_63d_std_spy) + "%)"
   indicators = pd.DataFrame([{'Technical Indicator': indicatorType,
-                              strLast_EOM_date : lastMonth_status_str, 
-                              strPrevious_EOM_date : monthBeforeLast_status_str, 
-                              'Comment': comment}], 
+                              strLast_EOM_date : lastMonth_status_str,
+                              strPrevious_EOM_date : monthBeforeLast_status_str,
+                              'Comment': comment}],
                              columns=['Technical Indicator', strLast_EOM_date, strPrevious_EOM_date,
                                       'Comment'])
   print (indicators)
 
 
-  
+
   return {
           "Technical Indicator": indicatorType,
           "Frequency":"Daily",
-          "MonthBeforeLast":lastMonth_status_str,
-          "LastMonth":monthBeforeLast_status_str,
-          "Comment":comment} 
-
+          "MonthBeforeLast":monthBeforeLast_status_str,
+          "LastMonth":lastMonth_status_str,
+          "Comment":comment}
