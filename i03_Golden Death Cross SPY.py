@@ -1,6 +1,6 @@
 """
 5/30/2019
-Robert Sloan 
+Robert Sloan
 
 Replicating Al Zmyslowski's AAII CIMI Market Review - Technical & Economic Indicators<br>
 Death/Golden Cross SPDR S&P 500 ETF (SPY)<br>
@@ -12,7 +12,7 @@ TODO
   Verify how to calculate %
   Add Red and Green bars on graph to show Long and Short regions
 
-  
+
 """
 # load libraries
 import pandas as pd
@@ -41,17 +41,19 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.plot(spy_data.index, spy_data, label='SPY')
   ax.plot(spy_50d_sma.index, spy_50d_sma, label='50 day SPY SMA')
   ax.plot(spy_200d_sma.index, spy_200d_sma, label='200 day SPY SMA')
+  plt.axvline(x=previous_EOM_date, color='k', linestyle='--') # add vertical dashed line for previous_EOM_date
+  plt.axvline(x=last_EOM_date, color='k', linestyle='--')     # add vertical dashed line for last_EOM_date
 
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price SPY ($)')
   ax.legend()
-  fig.savefig("Figures/Death Golden Cross.png") 
+  fig.savefig("Figures/Death Golden Cross.png")
   #plt.show()
-  
+
   # Last day of last month 50 day and 200 day SPY SMA
   # Current Day 50 day and 200 day SPY SMA
   endOfLastMonth_spy = spy_data.loc[last_EOM_date]
-  
+
   # print("endOfLastMonth_spy " + str(endOfLastMonth_spy))
   endOfLastMonth_50d_sma = spy_50d_sma.loc[last_EOM_date]
   # print("50 day " + str(endOfLastMonth_50d_sma))
@@ -67,7 +69,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   else:
       lastMonth_status_cross = 'SHORT'
   # print("lastMonth_status_cross = ", lastMonth_status_cross)
-  
+
 # Last day of last month 50 day and 200 day SPY SMA
   endOfMonthBeforeLast_spy = spy_data.loc[previous_EOM_date]
   # print("endOfMonthBeforeLast_spy " + str(endOfMonthBeforeLast_spy))
@@ -91,22 +93,18 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
 
   comment = "50d/200d EMA crossover"
   indicators = pd.DataFrame([{'Technical Indicator': 'Golden/Death Cross SPY',
-                              strLast_EOM_date:lastMonth_status_cross, 
-                              strPrevious_EOM_date:monthBeforeLast_status_cross, 
-                              'Comment': comment}], 
+                              strLast_EOM_date:lastMonth_status_cross,
+                              strPrevious_EOM_date:monthBeforeLast_status_cross,
+                              'Comment': comment}],
                              columns=['Technical Indicator', strLast_EOM_date, strPrevious_EOM_date,
                                       'Comment'])
   #print (indicators)
 
 
-  
+
   return {
           "Technical Indicator": "Golden/Death Cross SPY",
           "Frequency":"Daily",
           "MonthBeforeLast":monthBeforeLast_status_cross,
           "LastMonth":lastMonth_status_cross,
-          "Comment":comment} 
-
-
-  
-    
+          "Comment":comment}

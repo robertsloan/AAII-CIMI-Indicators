@@ -1,14 +1,14 @@
 """
-5/30/2019 
-Robert Sloan 
+5/30/2019
+Robert Sloan
 
-replicating Al Zmyslowski's AAII CIMI 10M SMA SPY Market timer 
+replicating Al Zmyslowski's AAII CIMI 10M SMA SPY Market timer
 SPY/10M Simple Moving Average (SMA) above 1 go long below 1 go short
 Using Yahoo Adjusted Close for SPY in calculations.
 TO DO
 
    Can excel spreadsheet be formatted including column width?
-   
+
 """
 # load libraries
 import pandas as pd
@@ -33,6 +33,8 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.set_title(title)
   ax.plot(spy_data.index, spy_data, label='SPY')
   ax.plot(spy_10m_sma.index, spy_10m_sma, label='10 month simple moving average')
+  plt.axvline(x=previous_EOM_date, color='k', linestyle='--') # add vertical dashed line for previous_EOM_date
+  plt.axvline(x=last_EOM_date, color='k', linestyle='--')     # add vertical dashed line for last_EOM_date
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price ($)')
   ax.legend()
@@ -76,24 +78,23 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   print("pd.to_datetime(last_EOM_date) = ", pd.to_datetime(last_EOM_date))
   print("pd.to_datetime(last_EOM_date).strftime('%Y-%m-%d') = ", pd.to_datetime(last_EOM_date).strftime('%Y-%m-%d'))
   print("str(pd.to_datetime(last_EOM_date).strftime('%Y-%m-%d')) = ", str(pd.to_datetime(last_EOM_date).strftime('%Y-%m-%d')))
-  """ 
+  """
 
   mbl=statusMonthBeforeLast + " (" + str(MonthBeforeLasts_percent_sma_spy) + "%)"
   lm=statusLastMonth + " (" + str(lastMonths_percent_sma_spy) + "%)"
   comment=" SPY/10 month SMA; 1.0 is lower limit"
   indicators = pd.DataFrame([{'Technical Indicator': '10 month SMA SPY',
-                              strLast_EOM_date:mbl, 
-                              strPrevious_EOM_date:lm, 
-                              'Comment': comment}], 
+                              strLast_EOM_date:mbl,
+                              strPrevious_EOM_date:lm,
+                              'Comment': comment}],
                              columns=['Technical Indicator', strLast_EOM_date, strPrevious_EOM_date,
                                       'Comment'])
   #print (indicators)
-  
+
 
   return {
           "Technical Indicator": "10 month SMA SPY",
           "Frequency":"Monthly",
           "MonthBeforeLast":mbl,
           "LastMonth":lm,
-          "Comment":comment} 
-
+          "Comment":comment}

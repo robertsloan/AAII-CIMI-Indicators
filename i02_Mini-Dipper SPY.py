@@ -1,6 +1,6 @@
 """
 5/30/2019
-Robert Sloan 
+Robert Sloan
 
 Replicating Al Zmyslowski's AAII CIMI Market Review - Technical & Economic Indicators
 Mini-Dipper (SPY)
@@ -42,13 +42,15 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.plot(spy_data.index, spy_data, label='SPY')
   ax.plot(spy_40d_sma.index, spy_40d_sma, label='40 day SMA SPY')
   ax.plot(spy_170d_ema.index, spy_170d_ema, label='170 day EMA SPY')
+  plt.axvline(x=previous_EOM_date, color='k', linestyle='--') # add vertical dashed line for previous_EOM_date
+  plt.axvline(x=last_EOM_date, color='k', linestyle='--')     # add vertical dashed line for last_EOM_date
 
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price SPY ($)')
   ax.legend()
-  fig.savefig("Figures/Mini-Dipper.png") 
+  fig.savefig("Figures/Mini-Dipper.png")
   #plt.show()
-  
+
   # Last day of last month 40 day SMA and 170 day SPY EMA
   endOfLastMonth_spy_40d_sma = float(spy_40d_sma[last_EOM_date].values)
   # print("40 day " + str(endOfLastMonth_spy_40d_sma))
@@ -79,7 +81,7 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # monthBeforeLast_mini_dipper_spy_percent = round(mini_dipper_spy/endOfMonthBeforeLast_spy,1)
   # print(monthBeforeLast_mini_dipper_spy_percent)
   # print("mini_dipper_spy = ", mini_dipper_spy)
- 
+
   if (mini_dipper_spy>1):
       monthBeforeLast_status_mini_dipper = 'LONG'
   else:
@@ -90,18 +92,18 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
 
   comment = "50d SMA/170d EMA"
   indicators = pd.DataFrame([{'Technical Indicator': 'Mini-Dipper SPY',
-                              strLast_EOM_date:lastMonth_status_mini_dipper, 
-                              strPrevious_EOM_date:monthBeforeLast_status_mini_dipper, 
-                              'Comment': comment}], 
+                              strLast_EOM_date:lastMonth_status_mini_dipper,
+                              strPrevious_EOM_date:monthBeforeLast_status_mini_dipper,
+                              'Comment': comment}],
                              columns=['Technical Indicator', strLast_EOM_date, strPrevious_EOM_date,
                                       'Comment'])
   #print (indicators)
 
 
-  
+
   return {
           "Technical Indicator": "Mini-Dipper SPY",
           "Frequency":"Daily",
           "MonthBeforeLast":monthBeforeLast_status_mini_dipper,
           "LastMonth":lastMonth_status_mini_dipper,
-          "Comment":comment} 
+          "Comment":comment}
