@@ -35,6 +35,12 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # Calculate the 63 day moving averages of the adjusted closing prices
   spy_63d_std = spy_data.rolling(window=63).std()
 
+  # If record_date not in spy_63d_std, set it to last valid date
+  if record_date not in spy_63d_std:
+      record_date2 = str(spy_63d_std.index[len(spy_63d_std) - 1].strftime('%Y-%m-%d'))
+      print("WARNING: record_date "+record_date+" not found, using "+record_date2)
+      record_date = record_date2
+
   # Plot everything by leveraging the very powerful matplotlib package
   fig, ax = plt.subplots(figsize=(16,9))
   fig, ax = plt.subplots(figsize=(16,9))
