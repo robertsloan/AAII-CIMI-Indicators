@@ -17,6 +17,7 @@ TODO
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+import os
 # this library load is because pandas matplotlib FutureWarning
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
@@ -57,7 +58,11 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   # fillin green or red bars depending if SPY or BIL had a better 5M year gain
   ax.fill_between(trunc_spy_data.index, 80, 300, where = gain_flag_5M==0, facecolor = 'green', alpha=0.5)
   ax.fill_between(trunc_spy_data.index, 80, 300, where = gain_flag_5M<0, facecolor = 'red', alpha=0.5)
-  fig.savefig("Figures/" + indicatorType +".png")
+  indicatorName = "i04_5M Gain"
+  filepath = "Figures/"+record_date+"_"+indicatorName+".png"
+  if os.path.exists(filepath) == False:
+      fig.savefig(filepath)
+  #fig.savefig("Figures/" + indicatorType +".png")
   #plt.show()
 
   # Calculate for Last day of last month

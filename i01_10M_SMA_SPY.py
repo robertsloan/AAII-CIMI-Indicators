@@ -14,6 +14,7 @@ TO DO
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+import os
 
 # from data in dataframe return Indicator
 def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
@@ -38,7 +39,11 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price ($)')
   ax.legend()
-  fig.savefig("Figures/10M_SMA_SPY.png") #**********************
+  indicatorName = "i01_10M_SMA_SPY"
+  filepath = "Figures/"+record_date+"_"+indicatorName+".png"
+  if os.path.exists(filepath) == False:
+      fig.savefig(filepath)
+  #fig.savefig("Figures/10M_SMA_SPY.png") #**********************
   #plt.show()
 
   # Last day of last month 10M SMA SPY

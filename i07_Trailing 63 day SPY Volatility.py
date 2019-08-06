@@ -17,6 +17,7 @@ Need to define % in Cash if Standard Deviation (SD) is >1%
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+import os
 
 # from data in dataframe return Indicator
 def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
@@ -53,7 +54,11 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price ($)')
   ax.legend()
-  fig.savefig("Figures/" + indicatorType + ".png")
+  indicatorName = "i07_Trailing 63 day SPY Volatility"
+  filepath = "Figures/"+record_date+"_"+indicatorName+".png"
+  if os.path.exists(filepath) == False:
+      fig.savefig(filepath)
+  #fig.savefig("Figures/" + indicatorType + ".png")
   #plt.show()
 
   # current 63 day volatility (Standard Deviation) SPY

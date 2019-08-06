@@ -17,6 +17,7 @@ TODO
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+import os
 
 # from data in dataframe return Indicator
 def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
@@ -48,7 +49,11 @@ def Indicator(dataframe, record_date, last_EOM_date, previous_EOM_date):
   ax.set_xlabel('Date')
   ax.set_ylabel('Adjusted closing price SPY ($)')
   ax.legend()
-  fig.savefig("Figures/Mini-Dipper.png")
+  indicatorName = "i02_Mini-Dipper SPY"
+  filepath = "Figures/"+record_date+"_"+indicatorName+".png"
+  if os.path.exists(filepath) == False:
+      fig.savefig(filepath)
+  #fig.savefig("Figures/Mini-Dipper.png")
   #plt.show()
 
   # Last day of last month 40 day SMA and 170 day SPY EMA
